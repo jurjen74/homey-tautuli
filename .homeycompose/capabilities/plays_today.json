@@ -1,0 +1,12 @@
+{
+  "title": {
+    "en": "Plays Today",
+    "nl": "Kijksessies vandaag"
+  },
+  "type": "number",
+  "decimals": 0,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "insights": true
+}

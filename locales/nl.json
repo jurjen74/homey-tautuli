@@ -1,0 +1,34 @@
+{
+  "pair": {
+    "connect": {
+      "title": "Verbinden met Tautulli",
+      "subtitle": "Voer je Tautulli-servergegevens in om verder te gaan",
+      "label_host": "Host-URL",
+      "placeholder_host": "http://192.168.1.100:8181",
+      "hint_host": "Vermeld de poort als Tautulli niet op poort 80/443 draait",
+      "label_apikey": "API-sleutel",
+      "placeholder_apikey": "Te vinden in Instellingen → Web Interface → API-sleutel",
+      "btn_test": "Verbinding testen",
+      "btn_testing": "Testen…",
+      "btn_next": "Volgende",
+      "error_host_required": "Host-URL is verplicht",
+      "error_apikey_required": "API-sleutel is verplicht",
+      "error_connection_failed": "Verbinding mislukt",
+      "success_connected": "Verbonden met Tautulli"
+    }
+  },
+  "widgets": {
+    "tautulli_recent": {
+      "title": "Recent bekeken",
+      "no_items": "Geen kijkgeschiedenis gevonden"
+    },
+    "tautulli_nowplaying": {
+      "title": "Nu aan het afspelen",
+      "no_streams": "Er speelt niets",
+      "section_client": "Client",
+      "section_stream": "Stream",
+      "section_media": "Media",
+      "section_network": "Netwerk"
+    }
+  }
+}

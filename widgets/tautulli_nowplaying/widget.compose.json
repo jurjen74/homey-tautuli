@@ -1,0 +1,58 @@
+{
+  "name": {
+    "en": "Now Playing",
+    "nl": "Nu aan het afspelen"
+  },
+  "height": 1,
+  "devices": {
+    "type": "app",
+    "singular": true,
+    "filter": {
+      "capabilities": "alarm_generic"
+    }
+  },
+  "settings": [
+    {
+      "id": "showPoster",
+      "type": "checkbox",
+      "label": { "en": "Show poster", "nl": "Poster tonen" },
+      "value": true
+    },
+    {
+      "id": "showTitle",
+      "type": "checkbox",
+      "label": { "en": "Show widget title", "nl": "Widgettitel tonen" },
+      "value": true
+    },
+    {
+      "id": "showClient",
+      "type": "checkbox",
+      "label": { "en": "Show client (product & player)", "nl": "Client tonen (product & speler)" },
+      "value": true
+    },
+    {
+      "id": "showStream",
+      "type": "checkbox",
+      "label": { "en": "Show stream (quality & decision)", "nl": "Stream tonen (kwaliteit & beslissing)" },
+      "value": true
+    },
+    {
+      "id": "showMedia",
+      "type": "checkbox",
+      "label": { "en": "Show media (video, audio & subtitle)", "nl": "Media tonen (video, audio & ondertitel)" },
+      "value": true
+    },
+    {
+      "id": "showNetwork",
+      "type": "checkbox",
+      "label": { "en": "Show network (location & bandwidth)", "nl": "Netwerk tonen (locatie & bandbreedte)" },
+      "value": false
+    }
+  ],
+  "api": {
+    "getNowPlaying": {
+      "method": "GET",
+      "path": "/"
+    }
+  }
+}

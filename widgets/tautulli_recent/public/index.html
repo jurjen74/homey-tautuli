@@ -1,0 +1,216 @@
+<html>
+  <head>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      html, body { background: transparent; }
+
+      #wrapper {
+        display: flex;
+        flex-direction: column;
+        padding: var(--homey-su-2);
+        gap: var(--homey-su-2);
+      }
+
+      .widget-title {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        opacity: 0.5;
+        flex-shrink: 0;
+      }
+
+      .list {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .day-header {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        opacity: 0.4;
+        padding: var(--homey-su-2) 0;
+        flex-shrink: 0;
+      }
+      .day-header:first-child { padding-top: 0; }
+
+      .item {
+        display: flex;
+        align-items: center;
+        gap: var(--homey-su-2);
+        padding: var(--homey-su-2) 0;
+        border-bottom: 1px solid rgba(128,128,128,0.15);
+        flex-shrink: 0;
+      }
+      .item:last-child { border-bottom: none; }
+
+      .item-content { flex: 1; min-width: 0; }
+
+      .item-primary {
+        font-size: 13px;
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.3;
+      }
+      .item-secondary {
+        font-size: 11px;
+        opacity: 0.55;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-top: var(--homey-su-1);
+        line-height: 1.3;
+      }
+
+      .badge {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 600;
+        padding: 1px 5px;
+        border-radius: 3px;
+        margin-right: var(--homey-su-1);
+        background: var(--homey-color-brand-primary, #e5a00d);
+        color: #000;
+        vertical-align: middle;
+        line-height: 1.5;
+      }
+
+      .notice {
+        font-size: 12px;
+        opacity: 0.45;
+        text-align: center;
+        margin: auto;
+        padding: var(--homey-su-4);
+      }
+    </style>
+  </head>
+
+  <body class="homey-widget">
+    <div id="wrapper">
+      <div class="widget-title" id="title-el"></div>
+      <div id="list" class="list"></div>
+    </div>
+
+    <script type="text/javascript">
+      function onHomeyReady(Homey) {
+        Homey.ready();
+
+        let CACHE_KEY  = 'tautulli-recent-html';
+        let HEIGHT_KEY = 'tautulli-recent-height';
+
+        function esc(s) {
+          return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        function timeAgo(isoDate) {
+          if (!isoDate) return '';
+          const diff = Date.now() - new Date(isoDate).getTime();
+          const h = Math.floor(diff / 3600000);
+          if (h < 1)  return 'Just now';
+          if (h < 24) return h + 'h ago';
+          const d = Math.floor(h / 24);
+          if (d < 7)  return d + 'd ago';
+          return new Date(isoDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        }
+
+        function dayLabel(isoDate) {
+          if (!isoDate) return '';
+          const d     = new Date(isoDate);
+          const today = new Date(); today.setHours(0, 0, 0, 0);
+          const yest  = new Date(today); yest.setDate(today.getDate() - 1);
+          const day   = new Date(d);    day.setHours(0, 0, 0, 0);
+          if (day.getTime() === today.getTime()) return 'Today';
+          if (day.getTime() === yest.getTime())  return 'Yesterday';
+          return d.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' });
+        }
+
+        function applyHeight() {
+          const h = Math.ceil(document.getElementById('wrapper').getBoundingClientRect().bottom);
+          localStorage.setItem(HEIGHT_KEY, h);
+          Homey.setHeight(h);
+        }
+
+        function notice(msg) {
+          document.getElementById('list').innerHTML = '<div class="notice">' + msg + '</div>';
+          applyHeight();
+        }
+
+        async function render() {
+          const s     = Homey.getSettings();
+          const group = s.groupByDay !== false;
+
+          const titleEl = document.getElementById('title-el');
+          titleEl.textContent    = Homey.__('widgets.tautulli_recent.title');
+          titleEl.style.display  = s.showTitle === false ? 'none' : '';
+
+          const list = document.getElementById('list');
+
+          if (!list.innerHTML) {
+            const cached = localStorage.getItem(CACHE_KEY);
+            if (cached) { list.innerHTML = cached; applyHeight(); }
+          }
+
+          try {
+            const deviceIds = Homey.getDeviceIds();
+            const deviceId  = deviceIds.length ? deviceIds[0] : '';
+
+            CACHE_KEY  = 'tautulli-recent-html-' + deviceId;
+            HEIGHT_KEY = 'tautulli-recent-height-' + deviceId;
+
+            const items = await Homey.api('GET',
+              '/?count=' + (s.count || 10) + '&deviceId=' + encodeURIComponent(deviceId), null);
+
+            if (!Array.isArray(items) || !items.length) {
+              notice(esc(Homey.__('widgets.tautulli_recent.no_items')));
+              return;
+            }
+
+            let html    = '';
+            let lastDay = null;
+
+            for (const item of items) {
+              const itemDay = item.date ? item.date.slice(0, 10) : '';
+
+              if (group && itemDay && itemDay !== lastDay) {
+                html += '<div class="day-header">' + esc(dayLabel(item.date)) + '</div>';
+                lastDay = itemDay;
+              }
+
+              const badge = item.badge
+                ? '<span class="badge">' + esc(item.badge) + '</span>' : '';
+
+              const parts = [esc(item.subtitle)];
+              if (!group) parts.push(esc(timeAgo(item.date)));
+              if (item.percentComplete > 0) parts.push(item.percentComplete + '%');
+              const secondary = parts.filter(Boolean).join(' &middot; ');
+
+              html += '<div class="item">'
+                + '<div class="item-content">'
+                + '<div class="item-primary">' + badge + esc(item.title) + '</div>'
+                + (secondary ? '<div class="item-secondary">' + secondary + '</div>' : '')
+                + '</div></div>';
+            }
+
+            list.innerHTML = html;
+            localStorage.setItem(CACHE_KEY, html);
+            applyHeight();
+          } catch (err) {
+            notice(esc(err.message || String(err)));
+          }
+        }
+
+        const savedH = parseInt(localStorage.getItem(HEIGHT_KEY), 10) || 0;
+        if (savedH) Homey.setHeight(savedH);
+
+        Homey.on('settings.set', render);
+        render();
+        setInterval(render, 60 * 1000);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,84 @@
+{
+  "triggers": [
+    {
+      "id": "stream_started",
+      "title": { "en": "A stream started", "nl": "Een stream gestart" },
+      "tokens": [
+        { "name": "user",       "type": "string",  "title": { "en": "User",        "nl": "Gebruiker" } },
+        { "name": "title",      "type": "string",  "title": { "en": "Title",       "nl": "Titel" } },
+        { "name": "media_type", "type": "string",  "title": { "en": "Media type",  "nl": "Mediatype" } },
+        { "name": "player",     "type": "string",  "title": { "en": "Player",      "nl": "Speler" } },
+        { "name": "transcoded", "type": "boolean", "title": { "en": "Transcoding", "nl": "Transcoderen" } }
+      ]
+    },
+    {
+      "id": "stream_ended",
+      "title": { "en": "A stream ended", "nl": "Een stream beëindigd" },
+      "tokens": [
+        { "name": "user",             "type": "string", "title": { "en": "User",         "nl": "Gebruiker" } },
+        { "name": "title",            "type": "string", "title": { "en": "Title",        "nl": "Titel" } },
+        { "name": "media_type",       "type": "string", "title": { "en": "Media type",   "nl": "Mediatype" } },
+        { "name": "progress_percent", "type": "number", "title": { "en": "Progress (%)", "nl": "Voortgang (%)" } }
+      ]
+    },
+    {
+      "id": "stream_paused",
+      "title": { "en": "A stream was paused", "nl": "Een stream gepauzeerd" },
+      "tokens": [
+        { "name": "user",       "type": "string", "title": { "en": "User",       "nl": "Gebruiker" } },
+        { "name": "title",      "type": "string", "title": { "en": "Title",      "nl": "Titel" } },
+        { "name": "media_type", "type": "string", "title": { "en": "Media type", "nl": "Mediatype" } },
+        { "name": "player",     "type": "string", "title": { "en": "Player",     "nl": "Speler" } }
+      ]
+    },
+    {
+      "id": "stream_resumed",
+      "title": { "en": "A stream was resumed", "nl": "Een stream hervat" },
+      "tokens": [
+        { "name": "user",       "type": "string", "title": { "en": "User",       "nl": "Gebruiker" } },
+        { "name": "title",      "type": "string", "title": { "en": "Title",      "nl": "Titel" } },
+        { "name": "media_type", "type": "string", "title": { "en": "Media type", "nl": "Mediatype" } },
+        { "name": "player",     "type": "string", "title": { "en": "Player",     "nl": "Speler" } }
+      ]
+    },
+    {
+      "id": "watch_completed",
+      "title": { "en": "A watch session completed", "nl": "Een kijksessie voltooid" },
+      "hint": {
+        "en": "Fires when Tautulli records a completed session in history.",
+        "nl": "Activeert wanneer Tautulli een voltooide sessie registreert."
+      },
+      "tokens": [
+        { "name": "user",             "type": "string", "title": { "en": "User",         "nl": "Gebruiker" } },
+        { "name": "title",            "type": "string", "title": { "en": "Title",        "nl": "Titel" } },
+        { "name": "media_type",       "type": "string", "title": { "en": "Media type",   "nl": "Mediatype" } },
+        { "name": "percent_complete", "type": "number", "title": { "en": "Progress (%)", "nl": "Voortgang (%)" } },
+        { "name": "duration",         "type": "number", "title": { "en": "Duration (s)", "nl": "Duur (s)" } }
+      ]
+    },
+    {
+      "id": "active_streams_changed",
+      "title": { "en": "Active stream count changed", "nl": "Aantal actieve streams gewijzigd" },
+      "tokens": [
+        { "name": "streams",          "type": "number", "title": { "en": "Active streams", "nl": "Actieve streams" } },
+        { "name": "previous_streams", "type": "number", "title": { "en": "Previous count", "nl": "Vorig aantal" } }
+      ]
+    }
+  ],
+  "conditions": [
+    {
+      "id": "stream_count_above",
+      "title": { "en": "Active streams !{{is|is not}} above", "nl": "Actieve streams !{{is|is niet}} boven" },
+      "titleFormatted": { "en": "Active streams !{{is|is not}} above [[count]]", "nl": "Actieve streams !{{is|is niet}} boven [[count]]" },
+      "args": [
+        {
+          "name": "count",
+          "type": "number",
+          "min": 0,
+          "step": 1,
+          "placeholder": { "en": "Number of streams", "nl": "Aantal streams" }
+        }
+      ]
+    }
+  ]
+}

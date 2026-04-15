@@ -1,0 +1,16 @@
+{
+  "title": {
+    "en": "Transcoding Streams",
+    "nl": "Transcoderende streams"
+  },
+  "type": "number",
+  "decimals": 0,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "insights": true,
+  "insightsTitleTrue": {
+    "en": "Transcoding streams",
+    "nl": "Transcoderende streams"
+  }
+}

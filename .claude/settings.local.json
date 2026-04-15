@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "Bash(npm run *)",
+      "Bash(ls C:\\\\repos\\\\homey-tautuli\\\\.eslintrc*)",
+      "Bash(ls C:\\\\repos\\\\homey-tautuli\\\\eslint.config*)",
+      "Bash(homey app *)",
+      "Bash(node *)",
+      "WebFetch(domain:cdn.jsdelivr.net)",
+      "Bash(npx eslint *)"
+    ]
+  }
+}

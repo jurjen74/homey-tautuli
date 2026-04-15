@@ -1,0 +1,16 @@
+{
+  "title": {
+    "en": "Active Streams",
+    "nl": "Actieve streams"
+  },
+  "type": "number",
+  "decimals": 0,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "insights": true,
+  "insightsTitleTrue": {
+    "en": "Active streams",
+    "nl": "Actieve streams"
+  }
+}

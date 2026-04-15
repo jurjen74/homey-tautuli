@@ -1,0 +1,98 @@
+{
+  "name": {
+    "en": "Tautulli",
+    "nl": "Tautulli"
+  },
+  "class": "other",
+  "capabilities": [
+    "alarm_generic",
+    "active_streams",
+    "transcoding_streams",
+    "plays_today",
+    "plays_this_week"
+  ],
+  "capabilitiesOptions": {
+    "alarm_generic": {
+      "title": {
+        "en": "Plex in use",
+        "nl": "Plex in gebruik"
+      },
+      "insightsTitleTrue": {
+        "en": "Plex became active",
+        "nl": "Plex werd actief"
+      },
+      "insightsTitleFalse": {
+        "en": "Plex became idle",
+        "nl": "Plex werd inactief"
+      }
+    }
+  },
+  "images": {
+    "small": "/drivers/tautulli/assets/images/small.png",
+    "large": "/drivers/tautulli/assets/images/large.png"
+  },
+  "pair": [
+    {
+      "id": "connect"
+    },
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ],
+  "settings": [
+    {
+      "type": "group",
+      "label": {
+        "en": "Connection",
+        "nl": "Verbinding"
+      },
+      "children": [
+        {
+          "id": "url",
+          "type": "text",
+          "label": {
+            "en": "Host URL",
+            "nl": "Host-URL"
+          }
+        },
+        {
+          "id": "apiKey",
+          "type": "password",
+          "label": {
+            "en": "API Key",
+            "nl": "API-sleutel"
+          }
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "label": {
+        "en": "Polling",
+        "nl": "Polling"
+      },
+      "children": [
+        {
+          "id": "pollInterval",
+          "type": "number",
+          "label": {
+            "en": "Poll interval (seconds)",
+            "nl": "Poll-interval (seconden)"
+          },
+          "value": 15,
+          "step": 1,
+          "min": 5,
+          "max": 300
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "id": "net.ladenius.tautuli",
+  "id": "net.ladenius.tautulli",
   "version": "1.0.0",
   "compatibility": ">=12.4.0",
   "sdk": 3,
@@ -8,10 +8,10 @@
     "local"
   ],
   "name": {
-    "en": "Tautuli"
+    "en": "Tautulli"
   },
   "description": {
-    "en": "Adds Plex insights using Tautuli"
+    "en": "Adds Plex insights using Tautulli"
   },
   "category": [
     "video"
@@ -25,5 +25,6 @@
   "author": {
     "name": "Jurjen Ladenius",
     "email": "jurjen@ladenius.net"
-  }
+  },
+  "brandColor": "#e5a00d"
 }

@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "lib": ["ES2020"],
+    "allowJs": true,
+    "checkJs": false,
+    "strict": false,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "app.js",
+    "lib/**/*.js",
+    "drivers/**/*.js",
+    "widgets/**/*.js"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

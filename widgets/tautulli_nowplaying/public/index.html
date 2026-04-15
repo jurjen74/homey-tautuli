@@ -1,0 +1,417 @@
+<html>
+  <head>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body { background: transparent; }
+
+      #wrapper {
+        display: flex;
+        flex-direction: column;
+        padding: var(--homey-su-2);
+        gap: var(--homey-su-2);
+      }
+
+      .widget-title {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        opacity: 0.5;
+      }
+
+      /* ── Session card ──────────────────────────── */
+      .session {
+        display: flex;
+        flex-direction: column;
+        border-radius: 8px;
+        overflow: hidden;
+        background: rgba(128,128,128,0.07);
+      }
+      .session + .session { margin-top: var(--homey-su-2); }
+
+      /* ── Header ────────────────────────────────── */
+      .session-head {
+        padding: var(--homey-su-2);
+        display: flex;
+        gap: var(--homey-su-2);
+        align-items: flex-start;
+      }
+
+      /* ── Poster ────────────────────────────────── */
+      .poster-wrap {
+        flex-shrink: 0;
+        width: 46px;
+        height: 68px;
+        border-radius: 4px;
+        background: rgba(128,128,128,0.15);
+        overflow: hidden;
+      }
+      .poster-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      /* ── Text column ───────────────────────────── */
+      .head-text {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--homey-su-1);
+        padding-top: 1px;
+      }
+
+      .user-row {
+        display: flex;
+        align-items: center;
+        gap: var(--homey-su-1);
+      }
+
+      .icon-user {
+        width: 12px;
+        height: 12px;
+        opacity: 0.5;
+        flex-shrink: 0;
+      }
+
+      .username {
+        font-size: 12px;
+        font-weight: 600;
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .badge {
+        font-size: 10px;
+        font-weight: 600;
+        padding: 1px 5px;
+        border-radius: 3px;
+        background: var(--homey-color-brand-primary, #e5a00d);
+        color: #000;
+        flex-shrink: 0;
+        line-height: 1.5;
+      }
+
+      .state-icon {
+        font-size: 10px;
+        opacity: 0.45;
+        flex-shrink: 0;
+      }
+
+      .media-title {
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 1.3;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .progress-row {
+        display: flex;
+        align-items: center;
+        gap: var(--homey-su-1);
+        margin-top: auto;
+      }
+
+      .progress-track {
+        flex: 1;
+        height: 3px;
+        background: rgba(128,128,128,0.25);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: var(--homey-color-brand-primary, #e5a00d);
+        border-radius: 2px;
+      }
+
+      .progress-label {
+        font-size: 10px;
+        opacity: 0.5;
+        flex-shrink: 0;
+        min-width: 28px;
+        text-align: right;
+      }
+
+      /* ── Info sections ─────────────────────────── */
+      .section {
+        border-top: 1px solid rgba(128,128,128,0.12);
+        padding: var(--homey-su-1) var(--homey-su-2) var(--homey-su-2);
+      }
+
+      .section-label {
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        opacity: 0.35;
+        padding: var(--homey-su-1) 0;
+      }
+
+      .kv {
+        display: flex;
+        align-items: baseline;
+        gap: var(--homey-su-1);
+        min-height: 18px;
+      }
+
+      .kv-key {
+        font-size: 11px;
+        opacity: 0.5;
+        flex: 0 0 72px;
+        white-space: nowrap;
+      }
+
+      .kv-val {
+        font-size: 11px;
+        font-weight: 500;
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .kv-val.direct { opacity: 0.6; }
+
+      /* ── Empty state ───────────────────────────── */
+      .notice {
+        font-size: 12px;
+        opacity: 0.45;
+        text-align: center;
+        padding: var(--homey-su-4);
+      }
+    </style>
+  </head>
+
+  <body class="homey-widget">
+    <div id="wrapper">
+      <div class="widget-title" id="title-el"></div>
+      <div id="sessions"></div>
+    </div>
+
+    <script type="text/javascript">
+      function onHomeyReady(Homey) {
+        Homey.ready();
+
+        let CACHE_KEY  = 'tautulli-nowplaying-html';
+        let HEIGHT_KEY = 'tautulli-nowplaying-height';
+
+        function esc(s) {
+          return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function channels(n) {
+          const map = { 1: 'Mono', 2: 'Stereo', 6: '5.1', 8: '7.1' };
+          return map[n] || (n ? n + 'ch' : '');
+        }
+
+        function bandwidth(kbps) {
+          if (!kbps) return '';
+          return kbps >= 1000 ? (kbps / 1000).toFixed(1) + ' Mbps' : kbps + ' kbps';
+        }
+
+        function decision(dec, throttled) {
+          if (!dec) return '';
+          if (dec === 'direct play') return 'Direct Play';
+          if (dec === 'copy') return 'Direct Stream';
+          if (dec === 'transcode') return throttled ? 'Transcode (Throttled)' : 'Transcode';
+          return dec;
+        }
+
+        function decisionClass(dec) {
+          if (dec === 'direct play' || dec === 'copy') return 'direct';
+          if (dec === 'transcode') return 'transcode';
+          return '';
+        }
+
+        function codecLine(dec, srcCodec, srcRes, dstCodec, dstRes) {
+          const src = [srcCodec, srcRes].filter(Boolean).join(' ').toUpperCase();
+          const dst = [dstCodec, dstRes].filter(Boolean).join(' ').toUpperCase();
+          if (dec === 'direct play') return 'Direct Play' + (src ? ' (' + src + ')' : '');
+          if (dec === 'copy') return 'Direct Stream' + (src ? ' (' + src + ')' : '');
+          if (dec === 'transcode' && src && dst && src !== dst) return src + ' \u2192 ' + dst;
+          if (dec === 'transcode') return 'Transcode' + (src ? ' (' + src + ')' : '');
+          return src;
+        }
+
+        function containerLine(srcCont, dstCont, videoDec) {
+          if (!srcCont) return (dstCont || '').toUpperCase();
+          const src = srcCont.toUpperCase();
+          const dst = dstCont.toUpperCase();
+          if (videoDec === 'direct play' || src === dst) return src;
+          return src + ' \u2192 ' + dst;
+        }
+
+        function audioLine(dec, srcCodec, srcCh, dstCodec, dstCh) {
+          const src = [srcCodec ? srcCodec.toUpperCase() : '', channels(srcCh)].filter(Boolean).join(' ');
+          const dst = [dstCodec ? dstCodec.toUpperCase() : '', channels(dstCh)].filter(Boolean).join(' ');
+          if (dec === 'direct play') return 'Direct Play' + (src ? ' (' + src + ')' : '');
+          if (dec === 'copy') return 'Direct Stream' + (src ? ' (' + src + ')' : '');
+          if (dec === 'transcode' && src && dst && src !== dst) return src + ' \u2192 ' + dst;
+          if (dec === 'transcode') return 'Transcode' + (src ? ' (' + src + ')' : '');
+          return src;
+        }
+
+        function stateIcon(state) {
+          if (state === 'paused') return '\u23F8';
+          if (state === 'buffering') return '\u21BB';
+          return '\u25B6';
+        }
+
+        function mediaTypeLabel(t) {
+          if (t === 'movie') return 'Movie';
+          if (t === 'episode') return 'TV';
+          if (t === 'track') return 'Music';
+          return t || '';
+        }
+
+        function kv(key, val, cls) {
+          if (!val) return '';
+          const c = cls ? ' class="kv-val ' + cls + '"' : ' class="kv-val"';
+          return '<div class="kv"><span class="kv-key">' + esc(key) + '</span><span' + c + '>' + esc(val) + '</span></div>';
+        }
+
+        function applyHeight() {
+          const h = Math.ceil(document.getElementById('wrapper').getBoundingClientRect().bottom);
+          localStorage.setItem(HEIGHT_KEY, h);
+          Homey.setHeight(h);
+        }
+
+        function notice(msg) {
+          document.getElementById('sessions').innerHTML = '<div class="notice">' + esc(msg) + '</div>';
+          applyHeight();
+        }
+
+        async function render() {
+          const s = Homey.getSettings();
+
+          const titleEl = document.getElementById('title-el');
+          titleEl.textContent   = Homey.__('widgets.tautulli_nowplaying.title');
+          titleEl.style.display = s.showTitle === false ? 'none' : '';
+
+          const sessionsEl = document.getElementById('sessions');
+
+          if (!sessionsEl.innerHTML) {
+            const cached = localStorage.getItem(CACHE_KEY);
+            if (cached) { sessionsEl.innerHTML = cached; applyHeight(); }
+          }
+
+          try {
+            const deviceIds = Homey.getDeviceIds();
+            const deviceId  = deviceIds.length ? deviceIds[0] : '';
+
+            CACHE_KEY  = 'tautulli-nowplaying-html-' + deviceId;
+            HEIGHT_KEY = 'tautulli-nowplaying-height-' + deviceId;
+
+            const sessions = await Homey.api('GET', '/?deviceId=' + encodeURIComponent(deviceId), null);
+
+            if (!Array.isArray(sessions) || !sessions.length) {
+              sessionsEl.innerHTML = '<div class="notice">' + esc(Homey.__('widgets.tautulli_nowplaying.no_streams')) + '</div>';
+              localStorage.setItem(CACHE_KEY, sessionsEl.innerHTML);
+              applyHeight();
+              return;
+            }
+
+            let html = '';
+
+            for (const p of sessions) {
+              const badge     = mediaTypeLabel(p.mediaType);
+              const showPoster = s.showPoster !== false && !!p.thumbUrl;
+
+              // ── Header ──
+              html += '<div class="session"><div class="session-head">';
+
+              if (showPoster) {
+                html += '<div class="poster-wrap"><img src="' + esc(p.thumbUrl) + '" alt="" loading="lazy" onerror="this.parentElement.style.background=\'rgba(128,128,128,0.15)\';this.remove()"></div>';
+              }
+
+              html += '<div class="head-text">'
+                + '<div class="user-row">'
+                + '<svg class="icon-user" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>'
+                + '<span class="username">' + esc(p.user) + '</span>'
+                + (badge ? '<span class="badge">' + esc(badge) + '</span>' : '')
+                + '<span class="state-icon">' + stateIcon(p.state) + '</span>'
+                + '</div>'
+                + '<div class="media-title">' + esc(p.title) + '</div>'
+                + '<div class="progress-row">'
+                + '<div class="progress-track"><div class="progress-fill" style="width:' + p.progressPercent + '%"></div></div>'
+                + '<span class="progress-label">' + p.progressPercent + '%</span>'
+                + '</div>'
+                + '</div>'; // .head-text
+
+              html += '</div>'; // .session-head
+
+              // ── Client section ──
+              if (s.showClient !== false && (p.product || p.player)) {
+                html += '<div class="section">'
+                  + '<div class="section-label">' + esc(Homey.__('widgets.tautulli_nowplaying.section_client')) + '</div>'
+                  + kv('Product', p.product)
+                  + kv('Player', p.player)
+                  + '</div>';
+              }
+
+              // ── Stream section ──
+              if (s.showStream !== false && (p.quality || p.transcodeDecision)) {
+                const streamDec = decision(p.transcodeDecision, p.throttled);
+                const contLine  = containerLine(p.sourceContainer, p.container, p.videoDecision);
+                html += '<div class="section">'
+                  + '<div class="section-label">' + esc(Homey.__('widgets.tautulli_nowplaying.section_stream')) + '</div>'
+                  + kv('Quality', p.quality)
+                  + kv('Stream', streamDec)
+                  + kv('Container', contLine)
+                  + '</div>';
+              }
+
+              // ── Media section ──
+              if (s.showMedia !== false) {
+                const vidLine = codecLine(p.videoDecision, p.sourceVideoCodec, p.sourceVideoResolution, p.videoCodec, p.videoResolution);
+                const audLine = audioLine(p.audioDecision, p.sourceAudioCodec, p.sourceAudioChannels, p.audioCodec, p.audioChannels);
+                const subLine = p.subtitleCodec ? p.subtitleCodec.toUpperCase() : 'None';
+                html += '<div class="section">'
+                  + '<div class="section-label">' + esc(Homey.__('widgets.tautulli_nowplaying.section_media')) + '</div>'
+                  + kv('Video', vidLine)
+                  + kv('Audio', audLine)
+                  + kv('Subtitle', subLine)
+                  + '</div>';
+              }
+
+              // ── Network section ──
+              if (s.showNetwork === true && (p.ipAddress || p.bandwidth)) {
+                const locLine = p.location ? p.location.toUpperCase() + ': ' + p.ipAddress : p.ipAddress;
+                html += '<div class="section">'
+                  + '<div class="section-label">' + esc(Homey.__('widgets.tautulli_nowplaying.section_network')) + '</div>'
+                  + kv('Location', locLine)
+                  + kv('Bandwidth', bandwidth(p.bandwidth))
+                  + '</div>';
+              }
+
+              html += '</div>'; // .session
+            }
+
+            sessionsEl.innerHTML = html;
+            localStorage.setItem(CACHE_KEY, html);
+            applyHeight();
+          } catch (err) {
+            notice(err.message || String(err));
+          }
+        }
+
+        const savedH = parseInt(localStorage.getItem(HEIGHT_KEY), 10) || 0;
+        if (savedH) Homey.setHeight(savedH);
+
+        Homey.on('settings.set', render);
+        render();
+        setInterval(render, 15 * 1000);
+      }
+    </script>
+  </body>
+</html>

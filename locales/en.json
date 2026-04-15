@@ -1,1 +1,34 @@
-{}
+{
+  "pair": {
+    "connect": {
+      "title": "Connect to Tautulli",
+      "subtitle": "Enter your Tautulli server details to continue",
+      "label_host": "Host URL",
+      "placeholder_host": "http://192.168.1.100:8181",
+      "hint_host": "Include the port if Tautulli is not on port 80/443",
+      "label_apikey": "API Key",
+      "placeholder_apikey": "Found in Settings → Web Interface → API key",
+      "btn_test": "Test connection",
+      "btn_testing": "Testing…",
+      "btn_next": "Next",
+      "error_host_required": "Host URL is required",
+      "error_apikey_required": "API key is required",
+      "error_connection_failed": "Connection failed",
+      "success_connected": "Connected to Tautulli successfully"
+    }
+  },
+  "widgets": {
+    "tautulli_recent": {
+      "title": "Recently Watched",
+      "no_items": "No watch history found"
+    },
+    "tautulli_nowplaying": {
+      "title": "Now Playing",
+      "no_streams": "Nothing is playing",
+      "section_client": "Client",
+      "section_stream": "Stream",
+      "section_media": "Media",
+      "section_network": "Network"
+    }
+  }
+}
