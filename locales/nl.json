@@ -29,6 +29,15 @@
       "section_stream": "Stream",
       "section_media": "Media",
       "section_network": "Netwerk"
+    },
+    "tautulli_topstats": {
+      "title": "Topstatistieken",
+      "no_data": "Geen gegevens beschikbaar",
+      "section_movies": "Meest bekeken films",
+      "section_tv": "Meest bekeken series",
+      "section_music": "Meest gespeelde artiesten",
+      "section_users": "Meest actieve gebruikers",
+      "section_platforms": "Meest actieve platforms"
     }
   }
 }

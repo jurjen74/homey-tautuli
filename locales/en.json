@@ -29,6 +29,15 @@
       "section_stream": "Stream",
       "section_media": "Media",
       "section_network": "Network"
+    },
+    "tautulli_topstats": {
+      "title": "Top Stats",
+      "no_data": "No data available",
+      "section_movies": "Most Watched Movies",
+      "section_tv": "Most Watched TV Shows",
+      "section_music": "Most Played Artists",
+      "section_users": "Most Active Users",
+      "section_platforms": "Most Active Platforms"
     }
   }
 }

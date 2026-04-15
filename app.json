@@ -585,6 +585,136 @@
         }
       },
       "id": "tautulli_recent"
+    },
+    "tautulli_topstats": {
+      "name": {
+        "en": "Top Stats",
+        "nl": "Topstatistieken"
+      },
+      "height": 1,
+      "devices": {
+        "type": "app",
+        "singular": true,
+        "filter": {
+          "capabilities": "alarm_generic"
+        }
+      },
+      "settings": [
+        {
+          "id": "showTitle",
+          "type": "checkbox",
+          "label": {
+            "en": "Show widget title",
+            "nl": "Widgettitel tonen"
+          },
+          "value": true
+        },
+        {
+          "id": "timeRange",
+          "type": "dropdown",
+          "label": {
+            "en": "Time range",
+            "nl": "Tijdperiode"
+          },
+          "value": "30",
+          "values": [
+            {
+              "id": "7",
+              "label": {
+                "en": "Last 7 days",
+                "nl": "Laatste 7 dagen"
+              }
+            },
+            {
+              "id": "30",
+              "label": {
+                "en": "Last 30 days",
+                "nl": "Laatste 30 dagen"
+              }
+            },
+            {
+              "id": "90",
+              "label": {
+                "en": "Last 90 days",
+                "nl": "Laatste 90 dagen"
+              }
+            }
+          ]
+        },
+        {
+          "id": "count",
+          "type": "number",
+          "label": {
+            "en": "Items per section",
+            "nl": "Items per sectie"
+          },
+          "value": 5,
+          "min": 3,
+          "max": 10,
+          "step": 1
+        },
+        {
+          "id": "showPoster",
+          "type": "checkbox",
+          "label": {
+            "en": "Show poster for #1",
+            "nl": "Poster tonen voor #1"
+          },
+          "value": true
+        },
+        {
+          "id": "showMovies",
+          "type": "checkbox",
+          "label": {
+            "en": "Show most watched movies",
+            "nl": "Meest bekeken films tonen"
+          },
+          "value": true
+        },
+        {
+          "id": "showTv",
+          "type": "checkbox",
+          "label": {
+            "en": "Show most watched TV shows",
+            "nl": "Meest bekeken series tonen"
+          },
+          "value": true
+        },
+        {
+          "id": "showMusic",
+          "type": "checkbox",
+          "label": {
+            "en": "Show most played artists",
+            "nl": "Meest gespeelde artiesten tonen"
+          },
+          "value": true
+        },
+        {
+          "id": "showUsers",
+          "type": "checkbox",
+          "label": {
+            "en": "Show most active users",
+            "nl": "Meest actieve gebruikers tonen"
+          },
+          "value": true
+        },
+        {
+          "id": "showPlatforms",
+          "type": "checkbox",
+          "label": {
+            "en": "Show most active platforms",
+            "nl": "Meest actieve platforms tonen"
+          },
+          "value": true
+        }
+      ],
+      "api": {
+        "getTopStats": {
+          "method": "GET",
+          "path": "/"
+        }
+      },
+      "id": "tautulli_topstats"
     }
   },
   "capabilities": {

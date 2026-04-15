@@ -1,0 +1,271 @@
+<html>
+  <head>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body { background: transparent; }
+
+      #wrapper {
+        display: flex;
+        flex-direction: column;
+        padding: var(--homey-su-2);
+        gap: var(--homey-su-3);
+      }
+
+      .widget-title {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        opacity: 0.5;
+      }
+
+      /* ── Section ───────────────────────────────── */
+      .section { display: flex; flex-direction: column; gap: var(--homey-su-1); }
+
+      .section + .section {
+        padding-top: var(--homey-su-2);
+        border-top: 1px solid rgba(128,128,128,0.1);
+      }
+
+      .section-label {
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        opacity: 0.35;
+      }
+
+      /* ── Two-column body: poster | items ───────── */
+      .section-body {
+        display: flex;
+        gap: var(--homey-su-2);
+        align-items: stretch;
+      }
+
+      /* Poster spans full height of the items list */
+      .poster-col {
+        flex-shrink: 0;
+        width: 42px;
+        border-radius: 4px;
+        background: rgba(128,128,128,0.12);
+        overflow: hidden;
+      }
+      .poster-col img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center top;
+        display: block;
+      }
+
+      /* User avatar — circle, centred */
+      .poster-col.avatar-col {
+        border-radius: 50%;
+        width: 42px;
+        height: 42px;
+        align-self: center;
+      }
+      .poster-col.avatar-col img {
+        object-position: center center;
+      }
+
+      /* Platform icon — small square, centred, contain fit */
+      .poster-col.platform-col {
+        width: 42px;
+        height: 42px;
+        border-radius: 8px;
+        align-self: center;
+        background: rgba(128,128,128,0.08);
+      }
+      .poster-col.platform-col img {
+        object-fit: contain;
+        object-position: center center;
+        padding: 6px;
+      }
+
+      /* Items column fills remaining width */
+      .items {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .item {
+        display: flex;
+        align-items: center;
+        gap: var(--homey-su-1);
+        min-height: 18px;
+      }
+
+      .rank {
+        font-size: 10px;
+        font-weight: 700;
+        opacity: 0.3;
+        flex-shrink: 0;
+        width: 12px;
+        text-align: right;
+      }
+
+      .title {
+        flex: 1;
+        font-size: 12px;
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .plays {
+        font-size: 10px;
+        opacity: 0.45;
+        flex-shrink: 0;
+        text-align: right;
+        min-width: 28px;
+      }
+
+      .notice {
+        font-size: 12px;
+        opacity: 0.45;
+        text-align: center;
+        padding: var(--homey-su-4);
+      }
+    </style>
+  </head>
+
+  <body class="homey-widget">
+    <div id="wrapper">
+      <div class="widget-title" id="title-el"></div>
+      <div id="content"></div>
+    </div>
+
+    <script type="text/javascript">
+      function onHomeyReady(Homey) {
+        Homey.ready();
+
+        let CACHE_KEY  = 'tautulli-topstats-html';
+        let HEIGHT_KEY = 'tautulli-topstats-height';
+
+        function esc(s) {
+          return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function applyHeight() {
+          const h = Math.ceil(document.getElementById('wrapper').getBoundingClientRect().bottom);
+          localStorage.setItem(HEIGHT_KEY, h);
+          Homey.setHeight(h);
+        }
+
+        function notice(msg) {
+          document.getElementById('content').innerHTML = '<div class="notice">' + esc(msg) + '</div>';
+          applyHeight();
+        }
+
+        const SECTIONS = [
+          { id: 'top_movies',    settingKey: 'showMovies',    labelKey: 'section_movies',    hasPoster: true, colClass: '' },
+          { id: 'top_tv',        settingKey: 'showTv',        labelKey: 'section_tv',        hasPoster: true, colClass: '' },
+          { id: 'top_music',     settingKey: 'showMusic',     labelKey: 'section_music',     hasPoster: true, colClass: '' },
+          { id: 'top_users',     settingKey: 'showUsers',     labelKey: 'section_users',     hasPoster: true, colClass: 'avatar-col' },
+          { id: 'top_platforms', settingKey: 'showPlatforms', labelKey: 'section_platforms', hasPoster: true, colClass: 'platform-col' },
+        ];
+
+        async function render() {
+          const s = Homey.getSettings();
+
+          const titleEl = document.getElementById('title-el');
+          titleEl.textContent   = Homey.__('widgets.tautulli_topstats.title');
+          titleEl.style.display = s.showTitle === false ? 'none' : '';
+
+          const content = document.getElementById('content');
+
+          if (!content.innerHTML) {
+            const cached = localStorage.getItem(CACHE_KEY);
+            if (cached) { content.innerHTML = cached; applyHeight(); }
+          }
+
+          try {
+            const deviceIds = Homey.getDeviceIds();
+            const deviceId  = deviceIds.length ? deviceIds[0] : '';
+
+            CACHE_KEY  = 'tautulli-topstats-html-' + deviceId;
+            HEIGHT_KEY = 'tautulli-topstats-height-' + deviceId;
+
+            const timeRange = s.timeRange || '30';
+            const count     = s.count || 5;
+
+            const data = await Homey.api('GET',
+              '/?deviceId=' + encodeURIComponent(deviceId)
+              + '&timeRange=' + timeRange
+              + '&count=' + count,
+              null);
+
+            if (!data || typeof data !== 'object') {
+              notice(Homey.__('widgets.tautulli_topstats.no_data'));
+              return;
+            }
+
+            const showPoster = s.showPoster !== false;
+            let html = '';
+
+            for (const sec of SECTIONS) {
+              if (s[sec.settingKey] === false) continue;
+
+              const rows = data[sec.id];
+              if (!rows || !rows.length) continue;
+
+              const usePoster = showPoster && sec.hasPoster;
+              const topRow    = rows[0];
+              const colClass  = 'poster-col' + (sec.colClass ? ' ' + sec.colClass : '');
+
+              html += '<div class="section">'
+                + '<div class="section-label">' + esc(Homey.__('widgets.tautulli_topstats.' + sec.labelKey)) + '</div>'
+                + '<div class="section-body">';
+
+              // Poster/avatar column — spans full height of items list
+              if (usePoster) {
+                html += '<div class="' + colClass + '">'
+                  + (topRow.thumbUrl
+                    ? '<img src="' + esc(topRow.thumbUrl) + '" alt="" onerror="this.parentElement.style.background=\'rgba(128,128,128,0.12)\';this.remove()">'
+                    : '')
+                  + '</div>';
+              }
+
+              // Items column — all ranks
+              html += '<div class="items">';
+              for (const row of rows) {
+                html += '<div class="item">'
+                  + '<span class="rank">' + row.rank + '</span>'
+                  + '<span class="title">' + esc(row.title) + '</span>'
+                  + '<span class="plays">' + row.plays + '\u00a0\u25B6</span>'
+                  + '</div>';
+              }
+              html += '</div>'; // .items
+
+              html += '</div>'; // .section-body
+              html += '</div>'; // .section
+            }
+
+            if (!html) {
+              notice(Homey.__('widgets.tautulli_topstats.no_data'));
+              return;
+            }
+
+            content.innerHTML = html;
+            localStorage.setItem(CACHE_KEY, html);
+            applyHeight();
+          } catch (err) {
+            notice(err.message || String(err));
+          }
+        }
+
+        const savedH = parseInt(localStorage.getItem(HEIGHT_KEY), 10) || 0;
+        if (savedH) Homey.setHeight(savedH);
+
+        Homey.on('settings.set', render);
+        render();
+        setInterval(render, 5 * 60 * 1000);
+      }
+    </script>
+  </body>
+</html>

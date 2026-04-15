@@ -259,6 +259,24 @@ class TautulliDevice extends Homey.Device {
     return this._client.getHistory(params);
   }
 
+  async _getPlatformImageDataUrl(imagePath) {
+    if (!imagePath) return '';
+    const cacheKey = `platform:${imagePath}`;
+    if (this._thumbCache.has(cacheKey)) return this._thumbCache.get(cacheKey);
+
+    // Try local Tautulli first; fall back to the public GitHub source when
+    // Tautulli's web auth blocks direct access to /images/.
+    let dataUrl = await this._client.getStaticImage(imagePath);
+    if (!dataUrl) {
+      const filename = imagePath.split('/').pop();
+      const githubUrl = `https://raw.githubusercontent.com/Tautulli/Tautulli/master/data/interfaces/default/images/platforms/${filename}`;
+      dataUrl = await this._client.fetchImage(githubUrl);
+    }
+
+    if (dataUrl) this._thumbCache.set(cacheKey, dataUrl);
+    return dataUrl;
+  }
+
   async _getThumbDataUrl(imgPath) {
     if (!imgPath) return '';
     if (this._thumbCache.has(imgPath)) return this._thumbCache.get(imgPath);
@@ -272,10 +290,16 @@ class TautulliDevice extends Homey.Device {
     const sessions = data.sessions || [];
 
     const thumbPaths = sessions.map((s) => s.grandparent_thumb || s.thumb || s.parent_thumb || '');
-    const thumbUrls = await Promise.all(thumbPaths.map((p) => this._getThumbDataUrl(p)));
+    const userThumbPaths = sessions.map((s) => s.user_thumb || '');
+
+    const [thumbUrls, userThumbUrls] = await Promise.all([
+      Promise.all(thumbPaths.map((p) => this._getThumbDataUrl(p))),
+      Promise.all(userThumbPaths.map((p) => this._getThumbDataUrl(p))),
+    ]);
 
     return sessions.map((s, i) => ({
       thumbUrl: thumbUrls[i],
+      userThumbUrl: userThumbUrls[i],
       user: s.friendly_name || s.user || '',
       title: s.full_title || s.title || '',
       grandparentTitle: s.grandparent_title || '',
@@ -312,6 +336,61 @@ class TautulliDevice extends Homey.Device {
       location: s.location || '',
       bandwidth: Number(s.bandwidth) || 0,
     }));
+  }
+
+  async getTopStats({ timeRange = 30, count = 5 } = {}) {
+    const stats = await this._client.getHomeStats({ timeRange, count });
+    const statList = Array.isArray(stats) ? stats : [];
+
+    // platform_name (lowercase, e.g. "chrome") → platforms/{name}.png on Tautulli's web root.
+    // user_thumb: Plex CDN URL proxied via pms_image_proxy.
+    const SECTIONS = [
+      {
+        id: 'top_movies', hasPoster: true, thumbField: 'thumb', imageType: 'plex',
+      },
+      {
+        id: 'top_tv', hasPoster: true, thumbField: 'thumb', imageType: 'plex',
+      },
+      {
+        id: 'top_music', hasPoster: true, thumbField: 'thumb', imageType: 'plex',
+      },
+      {
+        id: 'top_users', hasPoster: true, thumbField: 'user_thumb', imageType: 'plex',
+      },
+      {
+        id: 'top_platforms', hasPoster: true, thumbField: 'platform_name', imageType: 'static',
+      },
+    ];
+
+    const thumbFetches = SECTIONS.map(({
+      id, hasPoster, thumbField, imageType,
+    }) => {
+      if (!hasPoster || !thumbField) return Promise.resolve('');
+      const stat = statList.find((s) => s.stat_id === id);
+      const first = stat && (stat.rows || [])[0];
+      if (!first) return Promise.resolve('');
+      if (imageType === 'static') {
+        const name = first[thumbField] || '';
+        return name ? this._getPlatformImageDataUrl(`platforms/${name}.svg`) : Promise.resolve('');
+      }
+      const path = first[thumbField] || '';
+      return path ? this._getThumbDataUrl(path) : Promise.resolve('');
+    });
+    const thumbUrls = await Promise.all(thumbFetches);
+
+    const result = {};
+    SECTIONS.forEach(({ id, hasPoster }, idx) => {
+      const stat = statList.find((s) => s.stat_id === id);
+      if (!stat) return;
+      result[id] = (stat.rows || []).map((row, i) => ({
+        rank: i + 1,
+        title: row.friendly_name || row.user || row.platform || row.platform_type || row.title || '',
+        plays: Number(row.total_plays) || 0,
+        thumbUrl: hasPoster && i === 0 ? thumbUrls[idx] : '',
+      }));
+    });
+
+    return result;
   }
 
   async getRecentHistory(count = 10) {
