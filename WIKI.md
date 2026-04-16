@@ -201,7 +201,7 @@ Fires whenever the total number of active streams changes in either direction.
 
 Checks the current number of active Plex streams against a threshold. Useful as a guard condition so automations don't fire when Plex is idle.
 
-Example: "Turn off the living room lights AND active streams is 0" — ensures lights only go off when no one is watching anywhere in the house.
+Example: "Turn off the living room lights AND active streams is not above 0" — ensures lights only go off when no one is watching anywhere in the house.
 
 ---
 
