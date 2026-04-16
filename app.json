@@ -858,7 +858,8 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "insights": true
+      "insights": true,
+      "icon": "/assets/capabilities/measure_streams.svg"
     },
     "plays_this_week": {
       "title": {
@@ -870,7 +871,8 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "insights": true
+      "insights": true,
+      "icon": "/assets/capabilities/plays_this_week.svg"
     },
     "plays_today": {
       "title": {
@@ -882,7 +884,8 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "insights": true
+      "insights": true,
+      "icon": "/assets/capabilities/plays_today.svg"
     },
     "plex_active": {
       "title": {
@@ -901,7 +904,8 @@
       "insightsTitleFalse": {
         "en": "Plex became idle",
         "nl": "Plex werd inactief"
-      }
+      },
+      "icon": "/assets/capabilities/plex_active.svg"
     },
     "transcoding_streams": {
       "title": {
@@ -917,7 +921,8 @@
       "insightsTitleTrue": {
         "en": "Transcoding streams",
         "nl": "Transcoderende streams"
-      }
+      },
+      "icon": "/assets/capabilities/transcoding_streams.svg"
     }
   }
 }

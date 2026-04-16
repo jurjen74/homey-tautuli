@@ -9,5 +9,5 @@
   "setable": false,
   "uiComponent": "sensor",
   "insights": true,
-  "insights": true
+  "icon": "/assets/capabilities/measure_streams.svg"
 }

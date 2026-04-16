@@ -12,5 +12,6 @@
   "insightsTitleTrue": {
     "en": "Transcoding streams",
     "nl": "Transcoderende streams"
-  }
+  },
+  "icon": "/assets/capabilities/transcoding_streams.svg"
 }

@@ -15,5 +15,6 @@
   "insightsTitleFalse": {
     "en": "Plex became idle",
     "nl": "Plex werd inactief"
-  }
+  },
+  "icon": "/assets/capabilities/plex_active.svg"
 }
