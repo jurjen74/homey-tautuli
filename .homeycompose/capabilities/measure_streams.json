@@ -9,8 +9,5 @@
   "setable": false,
   "uiComponent": "sensor",
   "insights": true,
-  "insightsTitleTrue": {
-    "en": "Active streams",
-    "nl": "Actieve streams"
-  }
+  "insights": true
 }

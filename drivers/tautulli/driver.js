@@ -20,7 +20,7 @@ class TautulliDriver extends Homey.Driver {
 
     this.homey.flow.getConditionCard('stream_count_above')
       .registerRunListener(async (args) => {
-        const count = await args.device.getCapabilityValue('active_streams');
+        const count = await args.device.getCapabilityValue('measure_streams');
         return (count ?? 0) > args.count;
       });
 

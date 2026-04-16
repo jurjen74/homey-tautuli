@@ -11,8 +11,14 @@ class TautulliDevice extends Homey.Device {
   async onInit() {
     this._client = this._createClient();
 
-    // Capability migration — add new capabilities to existing devices
-    for (const cap of ['plays_today', 'plays_this_week']) {
+    // Capability migration
+    if (this.hasCapability('alarm_generic')) {
+      await this.removeCapability('alarm_generic').catch((err) => this.error('removeCapability alarm_generic:', err));
+    }
+    if (this.hasCapability('active_streams')) {
+      await this.removeCapability('active_streams').catch((err) => this.error('removeCapability active_streams:', err));
+    }
+    for (const cap of ['measure_streams', 'plex_active', 'plays_today', 'plays_this_week']) {
       if (!this.hasCapability(cap)) {
         await this.addCapability(cap).catch((err) => this.error(`addCapability ${cap}:`, err));
       }
@@ -130,9 +136,9 @@ class TautulliDevice extends Homey.Device {
       this._prevSessions = currentMap;
     }
 
-    await this.setCapabilityValue('active_streams', activeCount).catch(() => {});
+    await this.setCapabilityValue('measure_streams', activeCount).catch(() => {});
     await this.setCapabilityValue('transcoding_streams', transcodingCount).catch(() => {});
-    await this.setCapabilityValue('alarm_generic', activeCount > 0).catch(() => {});
+    await this.setCapabilityValue('plex_active', activeCount > 0).catch(() => {});
   }
 
   _indexTokens(item) {

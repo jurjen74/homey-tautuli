@@ -120,9 +120,11 @@ GET /api/v2?apikey=<key>&cmd=<command>[&param=value...]
 
 **Flow cards** go in `drivers/tautulli/driver.flow.compose.json` — NOT in `.homeycompose/flow/`. The latter creates app-level global triggers that don't appear under the device in the flow editor.
 
+**Device class: `sensor`** — required so Homey surfaces `measure_streams` as the tile value (the number shown without tapping). Only `measure_*` prefixed and built-in capabilities appear on the compact tile; custom non-`measure_*` capabilities do not, regardless of ordering or class.
+
 **Capabilities on the device card:**
-- `alarm_generic` (`false`=idle, `true`=active) — renamed "Plex in use"
-- `active_streams` (number)
+- `measure_streams` (number) — active stream count; `measure_` prefix is required for tile display
+- `plex_active` (boolean, `uiComponent: "sensor"`) — "Active"/"Idle" status; replaces `alarm_generic` which showed as red warning
 - `transcoding_streams` (number)
 - `plays_today` (number) — last entry in `get_plays_by_date` series data
 - `plays_this_week` (number) — 7-day sum from `get_plays_by_date`
@@ -177,6 +179,8 @@ All images returned to widgets are **base64 data URLs** embedded in the JSON res
 - **Spacing variables** — always use `--homey-su-N` (1 unit = 4 px). Never hardcode px for padding/margin.
 - **App/driver icon** — `fill="currentColor"` as an **XML attribute** on root `<svg>` or wrapping `<g>`. `style="fill:currentColor"` leaves icon invisible.
 - **Capability `units`** — non-empty string or i18n object, or omit entirely. `"units": ""` fails validation.
+- **Compact tile display** — only `measure_*` prefixed capabilities (e.g. `measure_streams`) and built-in Homey capabilities appear on the compact device tile. Custom non-`measure_*` capabilities never appear there, regardless of class or ordering. Device class must also be `"sensor"` for the tile value to render.
+- **`alarm_generic` shows red** — it is hardcoded as an alarm/warning indicator. Use a custom boolean capability with `uiComponent: "sensor"` and `titleTrue`/`titleFalse` in `capabilitiesOptions` for a neutral status display instead.
 - **Capability migration** — guard with `hasCapability()` before `addCapability()`.
 - **Widget number settings** — always `"step": 1` on `"type": "number"`.
 - **Widget images** — always proxy server-side; never use direct `http://` URLs in `<img src>`.

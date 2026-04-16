@@ -8,7 +8,7 @@
     "type": "app",
     "singular": true,
     "filter": {
-      "capabilities": "alarm_generic"
+      "capabilities": "measure_streams"
     }
   },
   "settings": [

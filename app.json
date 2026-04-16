@@ -480,29 +480,39 @@
         "en": "Tautulli",
         "nl": "Tautulli"
       },
-      "class": "other",
+      "class": "sensor",
       "capabilities": [
-        "alarm_generic",
-        "active_streams",
+        "measure_streams",
+        "plex_active",
         "transcoding_streams",
         "plays_today",
         "plays_this_week"
       ],
       "capabilitiesOptions": {
-        "alarm_generic": {
-          "title": {
-            "en": "Plex in use",
-            "nl": "Plex in gebruik"
+        "plex_active": {
+          "titleTrue": {
+            "en": "Active",
+            "nl": "Actief"
           },
-          "insightsTitleTrue": {
-            "en": "Plex became active",
-            "nl": "Plex werd actief"
-          },
-          "insightsTitleFalse": {
-            "en": "Plex became idle",
-            "nl": "Plex werd inactief"
+          "titleFalse": {
+            "en": "Idle",
+            "nl": "Inactief"
           }
         }
+      },
+      "ui": {
+        "components": [
+          {
+            "id": "sensor",
+            "capabilities": [
+              "measure_streams",
+              "plex_active",
+              "transcoding_streams",
+              "plays_today",
+              "plays_this_week"
+            ]
+          }
+        ]
       },
       "images": {
         "small": "/drivers/tautulli/assets/images/small.png",
@@ -586,7 +596,7 @@
         "type": "app",
         "singular": true,
         "filter": {
-          "capabilities": "alarm_generic"
+          "capabilities": "measure_streams"
         }
       },
       "settings": [
@@ -663,7 +673,7 @@
         "type": "app",
         "singular": true,
         "filter": {
-          "capabilities": "alarm_generic"
+          "capabilities": "measure_streams"
         }
       },
       "settings": [
@@ -716,7 +726,7 @@
         "type": "app",
         "singular": true,
         "filter": {
-          "capabilities": "alarm_generic"
+          "capabilities": "measure_streams"
         }
       },
       "settings": [
@@ -838,7 +848,7 @@
     }
   },
   "capabilities": {
-    "active_streams": {
+    "measure_streams": {
       "title": {
         "en": "Active Streams",
         "nl": "Actieve streams"
@@ -848,11 +858,7 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "insights": true,
-      "insightsTitleTrue": {
-        "en": "Active streams",
-        "nl": "Actieve streams"
-      }
+      "insights": true
     },
     "plays_this_week": {
       "title": {
@@ -877,6 +883,25 @@
       "setable": false,
       "uiComponent": "sensor",
       "insights": true
+    },
+    "plex_active": {
+      "title": {
+        "en": "Plex Active",
+        "nl": "Plex actief"
+      },
+      "type": "boolean",
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "insights": true,
+      "insightsTitleTrue": {
+        "en": "Plex became active",
+        "nl": "Plex werd actief"
+      },
+      "insightsTitleFalse": {
+        "en": "Plex became idle",
+        "nl": "Plex werd inactief"
+      }
     },
     "transcoding_streams": {
       "title": {

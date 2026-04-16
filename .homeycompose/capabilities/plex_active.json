@@ -1,0 +1,19 @@
+{
+  "title": {
+    "en": "Plex Active",
+    "nl": "Plex actief"
+  },
+  "type": "boolean",
+  "uiComponent": "sensor",
+  "getable": true,
+  "setable": false,
+  "insights": true,
+  "insightsTitleTrue": {
+    "en": "Plex became active",
+    "nl": "Plex werd actief"
+  },
+  "insightsTitleFalse": {
+    "en": "Plex became idle",
+    "nl": "Plex werd inactief"
+  }
+}

@@ -3,29 +3,33 @@
     "en": "Tautulli",
     "nl": "Tautulli"
   },
-  "class": "other",
+  "class": "sensor",
   "capabilities": [
-    "alarm_generic",
-    "active_streams",
+    "measure_streams",
+    "plex_active",
     "transcoding_streams",
     "plays_today",
     "plays_this_week"
   ],
   "capabilitiesOptions": {
-    "alarm_generic": {
-      "title": {
-        "en": "Plex in use",
-        "nl": "Plex in gebruik"
-      },
-      "insightsTitleTrue": {
-        "en": "Plex became active",
-        "nl": "Plex werd actief"
-      },
-      "insightsTitleFalse": {
-        "en": "Plex became idle",
-        "nl": "Plex werd inactief"
-      }
+    "plex_active": {
+      "titleTrue":  { "en": "Active", "nl": "Actief" },
+      "titleFalse": { "en": "Idle",   "nl": "Inactief" }
     }
+  },
+  "ui": {
+    "components": [
+      {
+        "id": "sensor",
+        "capabilities": [
+          "measure_streams",
+          "plex_active",
+          "transcoding_streams",
+          "plays_today",
+          "plays_this_week"
+        ]
+      }
+    ]
   },
   "images": {
     "small": "/drivers/tautulli/assets/images/small.png",

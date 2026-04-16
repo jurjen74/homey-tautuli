@@ -53,15 +53,15 @@ Tautulli does not need to be exposed to the internet. A local IP address is fine
 
 ## Device card
 
-The device card shows four live values updated on every poll:
+The device shows the active stream count directly on its tile in the Homey devices overview — no need to tap into it. All values update on every poll.
 
-| Capability | Description |
-|---|---|
-| **Plex in use** | `false` when idle, `true` when at least one stream is active |
-| **Active Streams** | Number of currently active Plex sessions |
-| **Transcoding Streams** | Number of sessions being transcoded in real time |
-| **Plays Today** | Total plays recorded by Tautulli for today |
-| **Plays This Week** | Total plays for the last 7 days |
+| Capability | Tile | Description |
+|---|---|---|
+| **Active Streams** | ✓ shown on tile | Number of currently active Plex sessions |
+| **Plex Active** | — | "Active" when streams are playing, "Idle" when not |
+| **Transcoding Streams** | — | Number of sessions being transcoded in real time |
+| **Plays Today** | — | Total plays recorded by Tautulli for today |
+| **Plays This Week** | — | Total plays for the last 7 days |
 
 **Plays Today** and **Plays This Week** are automatically logged to Homey Insights, giving you long-term usage charts.
 
@@ -85,7 +85,7 @@ Homey Insights records a value every time a capability changes and stores it as 
 
 | Capability | Type | What it records |
 |---|---|---|
-| **Plex in use** | Boolean | Every transition between idle and active |
+| **Plex Active** | Boolean | Every transition between idle and active |
 | **Active Streams** | Number | Stream count each time it changes |
 | **Transcoding Streams** | Number | Transcoding count each time it changes |
 | **Plays Today** | Number | Today's total play count, updated every poll |
