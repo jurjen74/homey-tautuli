@@ -131,6 +131,7 @@ class TautulliDevice extends Homey.Device {
         await this.driver._activeStreamsChangedTrigger
           .trigger(this, { streams: activeCount, previous_streams: prevCount })
           .catch((err) => this.error('active_streams_changed trigger error:', err.message));
+
       }
 
       this._prevSessions = currentMap;
@@ -162,19 +163,32 @@ class TautulliDevice extends Homey.Device {
     };
   }
 
+  _notify(excerpt, settingKey) {
+    if (this.getSetting(settingKey) === false) return;
+    this.homey.notifications.createNotification({ excerpt })
+      .catch((err) => this.error('notification error:', err.message));
+  }
+
   async _triggerStreamStarted(session) {
+    const title = session.full_title || session.title || '';
+    const user = session.user || '';
+    this._notify(`▶ ${user} — ${title} · ${this.getName()}`, 'notifyStreamStarted');
     await this.driver._streamStartedTrigger
       .trigger(this, this._sessionTokens(session))
       .catch((err) => this.error('stream_started trigger error:', err.message));
   }
 
   async _triggerStreamEnded(session) {
+    const title = session.full_title || session.title || '';
+    const user = session.user || '';
+    const pct = Number(session.progress_percent) || 0;
+    this._notify(`⏹ ${user} — ${title} (${pct}%) · ${this.getName()}`, 'notifyStreamEnded');
     await this.driver._streamEndedTrigger
       .trigger(this, {
-        user: session.user || '',
-        title: session.full_title || session.title || '',
+        user,
+        title,
         media_type: session.media_type || '',
-        progress_percent: Number(session.progress_percent) || 0,
+        progress_percent: pct,
         ...this._indexTokens(session),
       })
       .catch((err) => this.error('stream_ended trigger error:', err.message));
@@ -236,12 +250,16 @@ class TautulliDevice extends Homey.Device {
   }
 
   async _triggerWatchCompleted(record) {
+    const title = record.full_title || record.title || '';
+    const user = record.user || '';
+    const pct = Number(record.percent_complete) || 0;
+    this._notify(`✓ ${user} completed ${title} (${pct}%) · ${this.getName()}`, 'notifyWatchCompleted');
     await this.driver._watchCompletedTrigger
       .trigger(this, {
-        user: record.user || '',
-        title: record.full_title || record.title || '',
+        user,
+        title,
         media_type: record.media_type || '',
-        percent_complete: Number(record.percent_complete) || 0,
+        percent_complete: pct,
         duration: Number(record.duration) || 0,
         ...this._indexTokens(record),
       })

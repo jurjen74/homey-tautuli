@@ -80,6 +80,42 @@
     {
       "type": "group",
       "label": {
+        "en": "Notifications",
+        "nl": "Meldingen"
+      },
+      "children": [
+        {
+          "id": "notifyStreamStarted",
+          "type": "checkbox",
+          "label": {
+            "en": "Notify when a stream starts",
+            "nl": "Melding bij start van stream"
+          },
+          "value": true
+        },
+        {
+          "id": "notifyStreamEnded",
+          "type": "checkbox",
+          "label": {
+            "en": "Notify when a stream ends",
+            "nl": "Melding bij einde van stream"
+          },
+          "value": true
+        },
+        {
+          "id": "notifyWatchCompleted",
+          "type": "checkbox",
+          "label": {
+            "en": "Notify when a watch session completes",
+            "nl": "Melding bij voltooide kijksessie"
+          },
+          "value": true
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "label": {
         "en": "Polling",
         "nl": "Polling"
       },
