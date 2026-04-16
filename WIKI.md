@@ -7,10 +7,12 @@
 3. [Installation & pairing](#installation--pairing)
 4. [Device card](#device-card)
 5. [Device settings](#device-settings)
-6. [Flow cards](#flow-cards)
-7. [Dashboard widgets](#dashboard-widgets)
-8. [How images work](#how-images-work)
-9. [Troubleshooting](#troubleshooting)
+6. [Insights](#insights)
+7. [Notifications / Timeline](#notifications--timeline)
+8. [Flow cards](#flow-cards)
+9. [Dashboard widgets](#dashboard-widgets)
+10. [How images work](#how-images-work)
+11. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -19,7 +21,6 @@
 This app connects Homey to [Tautulli](https://tautulli.com), the monitoring and statistics tool for Plex Media Server. Once paired, your Tautulli instance appears as a device in Homey. Homey polls it every 15 seconds to track active streams and periodically for play statistics.
 
 You can use this to:
-- Turn lights on/off when someone starts or stops watching Plex
 - Send notifications when specific users start a stream or finish watching something
 - Display live "now playing" information and play statistics on your Homey dashboard
 - Drive Insights charts for daily and weekly Plex usage
@@ -55,15 +56,13 @@ Tautulli does not need to be exposed to the internet. A local IP address is fine
 
 The device shows the active stream count directly on its tile in the Homey devices overview — no need to tap into it. All values update on every poll.
 
-| Capability | Tile | Description |
-|---|---|---|
-| **Active Streams** | ✓ shown on tile | Number of currently active Plex sessions |
-| **Plex Active** | — | "Active" when streams are playing, "Idle" when not |
-| **Transcoding Streams** | — | Number of sessions being transcoded in real time |
-| **Plays Today** | — | Total plays recorded by Tautulli for today |
-| **Plays This Week** | — | Total plays for the last 7 days |
-
-**Plays Today** and **Plays This Week** are automatically logged to Homey Insights, giving you long-term usage charts.
+| Capability | Tile | Icon | Description |
+|---|---|---|---|
+| **Active Streams** | ✓ shown on tile | Concurrent streams | Number of currently active Plex sessions |
+| **Plex Active** | — | Plex chevron | "Active" when streams are playing, "Idle" when not |
+| **Transcoding Streams** | — | Transcode icon | Number of sessions being transcoded in real time |
+| **Plays Today** | — | Clock/history | Total plays recorded by Tautulli for today |
+| **Plays This Week** | — | Calendar | Total plays for the last 7 days |
 
 ---
 
@@ -75,6 +74,14 @@ The device shows the active stream count directly on its tile in the Homey devic
 | **API Key** | — | Found in Tautulli → Settings → Web Interface |
 | **Poll interval** | 15 s | How often Homey checks Tautulli. Range: 5–300 s |
 
+**Notification settings** (all on by default unless noted):
+
+| Setting | Default | Description |
+|---|---|---|
+| Notify when a stream starts | On | Posts to Homey Timeline when a stream begins |
+| Notify when a stream ends | On | Posts to Homey Timeline when a stream stops |
+| Notify when a watch session completes | On | Posts to Homey Timeline when Tautulli logs a completed watch |
+
 Changes to Host URL or API Key take effect immediately without repairing. Changing the poll interval restarts the polling timer.
 
 ---
@@ -85,8 +92,8 @@ Homey Insights records a value every time a capability changes and stores it as 
 
 | Capability | Type | What it records |
 |---|---|---|
-| **Plex Active** | Boolean | Every transition between idle and active |
-| **Active Streams** | Number | Stream count each time it changes |
+| **Plex Active** | Boolean | Every transition between idle and active — shows "Plex became active" / "Plex became idle" |
+| **Active Streams** | Number | Stream count each time it changes — step chart (0→1→2→1→0) |
 | **Transcoding Streams** | Number | Transcoding count each time it changes |
 | **Plays Today** | Number | Today's total play count, updated every poll |
 | **Plays This Week** | Number | 7-day total play count, updated every poll |
@@ -96,13 +103,31 @@ Open the Homey app → tap your Tautulli device → tap any capability value →
 
 **What the charts show**
 
-- *Plex in use* gives a binary on/off timeline — useful for seeing at a glance when your household watches Plex during the day or week.
-- *Active / Transcoding Streams* show the exact count over time, so you can spot peak viewing hours or notice when transcoding load is high.
-- *Plays Today* resets at midnight and climbs through the day. Because Homey logs every value change, the Insights chart shows the running total as a staircase — each step is one completed play.
-- *Plays This Week* similarly climbs over the week and resets on a rolling 7-day window.
+- *Plex Active* gives a binary on/off timeline with text labels ("Plex became active / idle") — useful for seeing at a glance when your household watches Plex during the day or week.
+- *Active Streams* shows the exact count over time as a step chart — each step up or down corresponds to a stream starting or ending. This is the visual equivalent of "Active streams are now 2".
+- *Transcoding Streams* lets you spot when your server is under transcoding load.
+- *Plays Today* resets at midnight and climbs through the day. Each step is one completed play.
+- *Plays This Week* similarly climbs over the week on a rolling 7-day window.
+
+**Note on text labels in Insights**
+The "Plex became active / Plex became idle" labels are specific to boolean capabilities. Numeric capabilities (like Active Streams) show as charts with exact values, not text labels — Homey's Insights API does not support dynamic text entries. For text-form event descriptions (including usernames), use the Notifications / Timeline feature described below.
 
 **A note on backfill**
-Homey Insights only records data from the moment the device is first paired. There is no way to import historical Tautulli data into Insights retroactively — Homey's API does not support writing past-dated entries. The Tautulli history is surfaced instead through the **Recently Played** and **Top Stats** dashboard widgets, which query Tautulli directly and always show real historical data regardless of when the device was added.
+Homey Insights only records data from the moment the device is first paired. There is no way to import historical Tautulli data into Insights retroactively. The Tautulli history is surfaced instead through the **Recently Played** and **Top Stats** dashboard widgets, which query Tautulli directly and always show real historical data regardless of when the device was added.
+
+---
+
+## Notifications / Timeline
+
+The app posts to Homey's Timeline (the notification bell in the Homey app) for key stream events. These appear in the app-wide Timeline and can be viewed per-app by filtering.
+
+| Event | Example message | Setting |
+|---|---|---|
+| Stream started | `▶ John — Breaking Bad - Pilot · Tautulli (192.168.2.58)` | Notify when a stream starts |
+| Stream ended | `⏹ John — Breaking Bad - Pilot (65%) · Tautulli (192.168.2.58)` | Notify when a stream ends |
+| Watch completed | `✓ John completed Breaking Bad - Pilot (98%) · Tautulli (192.168.2.58)` | Notify when a watch session completes |
+
+The device name (`Tautulli (192.168.2.58)` by default) is appended to each message so you can distinguish events from multiple paired servers. Each notification type can be toggled independently in the device settings.
 
 ---
 
@@ -302,3 +327,13 @@ If your Tautulli has web authentication enabled, Homey falls back to fetching pl
 
 **Plays Today / Plays This Week show 0**
 These are populated from `get_plays_by_date`. If Tautulli has no history for the current period (e.g. freshly installed), they will be 0 until plays are recorded.
+
+**No notifications appearing in the Timeline**
+Check the device settings — each notification type can be toggled individually. All three are on by default.
+
+
+# TAUTULLI
+
+I am not affiliated with Tautulli. You can find this product and it's documentation on:
+
+[https://tautulli.com](https://tautulli.com)

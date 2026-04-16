@@ -11,7 +11,7 @@
     "en": "Tautulli"
   },
   "description": {
-    "en": "Adds Plex insights using Tautulli"
+    "en": "Monitor your Plex Media Server"
   },
   "category": [
     "video"
@@ -26,5 +26,18 @@
     "name": "Jurjen Ladenius",
     "email": "jurjen@ladenius.net"
   },
-  "brandColor": "#e5a00d"
+  "brandColor": "#e5a00d",
+  "support": "https://github.com/jurjen74/homey-tautuli/issues",
+  "bugs": {
+    "url": "https://github.com/jurjen74/homey-tautuli/issues"
+  },
+  "source": "https://github.com/jurjen74/homey-tautuli",
+  "homeyCommunityTopicId": 153854,
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "aessedai@ladenius.net"
+      }
+    }
+  }
 }
