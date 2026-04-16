@@ -19,7 +19,7 @@
   },
   "widgets": {
     "tautulli_recent": {
-      "title": "Recent bekeken",
+      "title": "Recent afgespeeld",
       "no_items": "Geen kijkgeschiedenis gevonden"
     },
     "tautulli_nowplaying": {

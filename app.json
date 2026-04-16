@@ -76,6 +76,30 @@
               "en": "Transcoding",
               "nl": "Transcoderen"
             }
+          },
+          {
+            "name": "season_number",
+            "type": "number",
+            "title": {
+              "en": "Season",
+              "nl": "Seizoen"
+            }
+          },
+          {
+            "name": "episode_number",
+            "type": "number",
+            "title": {
+              "en": "Episode number",
+              "nl": "Afleveringsnummer"
+            }
+          },
+          {
+            "name": "track_number",
+            "type": "number",
+            "title": {
+              "en": "Track number",
+              "nl": "Tracknummer"
+            }
           }
         ],
         "args": [
@@ -123,6 +147,30 @@
             "title": {
               "en": "Progress (%)",
               "nl": "Voortgang (%)"
+            }
+          },
+          {
+            "name": "season_number",
+            "type": "number",
+            "title": {
+              "en": "Season",
+              "nl": "Seizoen"
+            }
+          },
+          {
+            "name": "episode_number",
+            "type": "number",
+            "title": {
+              "en": "Episode number",
+              "nl": "Afleveringsnummer"
+            }
+          },
+          {
+            "name": "track_number",
+            "type": "number",
+            "title": {
+              "en": "Track number",
+              "nl": "Tracknummer"
             }
           }
         ],
@@ -172,6 +220,30 @@
               "en": "Player",
               "nl": "Speler"
             }
+          },
+          {
+            "name": "season_number",
+            "type": "number",
+            "title": {
+              "en": "Season",
+              "nl": "Seizoen"
+            }
+          },
+          {
+            "name": "episode_number",
+            "type": "number",
+            "title": {
+              "en": "Episode number",
+              "nl": "Afleveringsnummer"
+            }
+          },
+          {
+            "name": "track_number",
+            "type": "number",
+            "title": {
+              "en": "Track number",
+              "nl": "Tracknummer"
+            }
           }
         ],
         "args": [
@@ -219,6 +291,30 @@
             "title": {
               "en": "Player",
               "nl": "Speler"
+            }
+          },
+          {
+            "name": "season_number",
+            "type": "number",
+            "title": {
+              "en": "Season",
+              "nl": "Seizoen"
+            }
+          },
+          {
+            "name": "episode_number",
+            "type": "number",
+            "title": {
+              "en": "Episode number",
+              "nl": "Afleveringsnummer"
+            }
+          },
+          {
+            "name": "track_number",
+            "type": "number",
+            "title": {
+              "en": "Track number",
+              "nl": "Tracknummer"
             }
           }
         ],
@@ -279,6 +375,30 @@
             "title": {
               "en": "Duration (s)",
               "nl": "Duur (s)"
+            }
+          },
+          {
+            "name": "season_number",
+            "type": "number",
+            "title": {
+              "en": "Season",
+              "nl": "Seizoen"
+            }
+          },
+          {
+            "name": "episode_number",
+            "type": "number",
+            "title": {
+              "en": "Episode number",
+              "nl": "Afleveringsnummer"
+            }
+          },
+          {
+            "name": "track_number",
+            "type": "number",
+            "title": {
+              "en": "Track number",
+              "nl": "Tracknummer"
             }
           }
         ],
@@ -535,8 +655,8 @@
     },
     "tautulli_recent": {
       "name": {
-        "en": "Recently Watched",
-        "nl": "Recent bekeken"
+        "en": "Recently Played",
+        "nl": "Recent afgespeeld"
       },
       "height": 1,
       "devices": {

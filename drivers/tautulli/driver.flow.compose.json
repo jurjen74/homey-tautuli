@@ -4,41 +4,53 @@
       "id": "stream_started",
       "title": { "en": "A stream started", "nl": "Een stream gestart" },
       "tokens": [
-        { "name": "user",       "type": "string",  "title": { "en": "User",        "nl": "Gebruiker" } },
-        { "name": "title",      "type": "string",  "title": { "en": "Title",       "nl": "Titel" } },
-        { "name": "media_type", "type": "string",  "title": { "en": "Media type",  "nl": "Mediatype" } },
-        { "name": "player",     "type": "string",  "title": { "en": "Player",      "nl": "Speler" } },
-        { "name": "transcoded", "type": "boolean", "title": { "en": "Transcoding", "nl": "Transcoderen" } }
+        { "name": "user",           "type": "string",  "title": { "en": "User",           "nl": "Gebruiker" } },
+        { "name": "title",          "type": "string",  "title": { "en": "Title",          "nl": "Titel" } },
+        { "name": "media_type",     "type": "string",  "title": { "en": "Media type",     "nl": "Mediatype" } },
+        { "name": "player",         "type": "string",  "title": { "en": "Player",         "nl": "Speler" } },
+        { "name": "transcoded",     "type": "boolean", "title": { "en": "Transcoding",    "nl": "Transcoderen" } },
+        { "name": "season_number",  "type": "number",  "title": { "en": "Season",         "nl": "Seizoen" } },
+        { "name": "episode_number", "type": "number",  "title": { "en": "Episode number", "nl": "Afleveringsnummer" } },
+        { "name": "track_number",   "type": "number",  "title": { "en": "Track number",   "nl": "Tracknummer" } }
       ]
     },
     {
       "id": "stream_ended",
       "title": { "en": "A stream ended", "nl": "Een stream beëindigd" },
       "tokens": [
-        { "name": "user",             "type": "string", "title": { "en": "User",         "nl": "Gebruiker" } },
-        { "name": "title",            "type": "string", "title": { "en": "Title",        "nl": "Titel" } },
-        { "name": "media_type",       "type": "string", "title": { "en": "Media type",   "nl": "Mediatype" } },
-        { "name": "progress_percent", "type": "number", "title": { "en": "Progress (%)", "nl": "Voortgang (%)" } }
+        { "name": "user",             "type": "string", "title": { "en": "User",           "nl": "Gebruiker" } },
+        { "name": "title",            "type": "string", "title": { "en": "Title",          "nl": "Titel" } },
+        { "name": "media_type",       "type": "string", "title": { "en": "Media type",     "nl": "Mediatype" } },
+        { "name": "progress_percent", "type": "number", "title": { "en": "Progress (%)",   "nl": "Voortgang (%)" } },
+        { "name": "season_number",    "type": "number", "title": { "en": "Season",         "nl": "Seizoen" } },
+        { "name": "episode_number",   "type": "number", "title": { "en": "Episode number", "nl": "Afleveringsnummer" } },
+        { "name": "track_number",     "type": "number", "title": { "en": "Track number",   "nl": "Tracknummer" } }
       ]
     },
     {
       "id": "stream_paused",
       "title": { "en": "A stream was paused", "nl": "Een stream gepauzeerd" },
       "tokens": [
-        { "name": "user",       "type": "string", "title": { "en": "User",       "nl": "Gebruiker" } },
-        { "name": "title",      "type": "string", "title": { "en": "Title",      "nl": "Titel" } },
-        { "name": "media_type", "type": "string", "title": { "en": "Media type", "nl": "Mediatype" } },
-        { "name": "player",     "type": "string", "title": { "en": "Player",     "nl": "Speler" } }
+        { "name": "user",           "type": "string", "title": { "en": "User",           "nl": "Gebruiker" } },
+        { "name": "title",          "type": "string", "title": { "en": "Title",          "nl": "Titel" } },
+        { "name": "media_type",     "type": "string", "title": { "en": "Media type",     "nl": "Mediatype" } },
+        { "name": "player",         "type": "string", "title": { "en": "Player",         "nl": "Speler" } },
+        { "name": "season_number",  "type": "number", "title": { "en": "Season",         "nl": "Seizoen" } },
+        { "name": "episode_number", "type": "number", "title": { "en": "Episode number", "nl": "Afleveringsnummer" } },
+        { "name": "track_number",   "type": "number", "title": { "en": "Track number",   "nl": "Tracknummer" } }
       ]
     },
     {
       "id": "stream_resumed",
       "title": { "en": "A stream was resumed", "nl": "Een stream hervat" },
       "tokens": [
-        { "name": "user",       "type": "string", "title": { "en": "User",       "nl": "Gebruiker" } },
-        { "name": "title",      "type": "string", "title": { "en": "Title",      "nl": "Titel" } },
-        { "name": "media_type", "type": "string", "title": { "en": "Media type", "nl": "Mediatype" } },
-        { "name": "player",     "type": "string", "title": { "en": "Player",     "nl": "Speler" } }
+        { "name": "user",           "type": "string", "title": { "en": "User",           "nl": "Gebruiker" } },
+        { "name": "title",          "type": "string", "title": { "en": "Title",          "nl": "Titel" } },
+        { "name": "media_type",     "type": "string", "title": { "en": "Media type",     "nl": "Mediatype" } },
+        { "name": "player",         "type": "string", "title": { "en": "Player",         "nl": "Speler" } },
+        { "name": "season_number",  "type": "number", "title": { "en": "Season",         "nl": "Seizoen" } },
+        { "name": "episode_number", "type": "number", "title": { "en": "Episode number", "nl": "Afleveringsnummer" } },
+        { "name": "track_number",   "type": "number", "title": { "en": "Track number",   "nl": "Tracknummer" } }
       ]
     },
     {
@@ -49,11 +61,14 @@
         "nl": "Activeert wanneer Tautulli een voltooide sessie registreert."
       },
       "tokens": [
-        { "name": "user",             "type": "string", "title": { "en": "User",         "nl": "Gebruiker" } },
-        { "name": "title",            "type": "string", "title": { "en": "Title",        "nl": "Titel" } },
-        { "name": "media_type",       "type": "string", "title": { "en": "Media type",   "nl": "Mediatype" } },
-        { "name": "percent_complete", "type": "number", "title": { "en": "Progress (%)", "nl": "Voortgang (%)" } },
-        { "name": "duration",         "type": "number", "title": { "en": "Duration (s)", "nl": "Duur (s)" } }
+        { "name": "user",             "type": "string", "title": { "en": "User",           "nl": "Gebruiker" } },
+        { "name": "title",            "type": "string", "title": { "en": "Title",          "nl": "Titel" } },
+        { "name": "media_type",       "type": "string", "title": { "en": "Media type",     "nl": "Mediatype" } },
+        { "name": "percent_complete", "type": "number", "title": { "en": "Progress (%)",   "nl": "Voortgang (%)" } },
+        { "name": "duration",         "type": "number", "title": { "en": "Duration (s)",   "nl": "Duur (s)" } },
+        { "name": "season_number",    "type": "number", "title": { "en": "Season",         "nl": "Seizoen" } },
+        { "name": "episode_number",   "type": "number", "title": { "en": "Episode number", "nl": "Afleveringsnummer" } },
+        { "name": "track_number",     "type": "number", "title": { "en": "Track number",   "nl": "Tracknummer" } }
       ]
     },
     {

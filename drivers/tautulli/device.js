@@ -25,6 +25,7 @@ class TautulliDevice extends Homey.Device {
     this._seenHistoryIds = null;
 
     this._thumbCache = new Map(); // imgPath → base64 data URL
+    this._statsCache = new Map(); // "timeRange:count" → { data, expiresAt }
 
     this._pollTimer = null;
     this._startPolling();
@@ -134,6 +135,16 @@ class TautulliDevice extends Homey.Device {
     await this.setCapabilityValue('alarm_generic', activeCount > 0).catch(() => {});
   }
 
+  _indexTokens(item) {
+    const isEpisode = item.media_type === 'episode';
+    const isTrack = item.media_type === 'track';
+    return {
+      season_number: isEpisode ? Number(item.parent_media_index) || 0 : 0,
+      episode_number: isEpisode ? Number(item.media_index) || 0 : 0,
+      track_number: isTrack ? Number(item.media_index) || 0 : 0,
+    };
+  }
+
   _sessionTokens(session) {
     return {
       user: session.user || '',
@@ -141,6 +152,7 @@ class TautulliDevice extends Homey.Device {
       media_type: session.media_type || '',
       player: session.player || '',
       transcoded: session.transcode_decision === 'transcode',
+      ...this._indexTokens(session),
     };
   }
 
@@ -157,6 +169,7 @@ class TautulliDevice extends Homey.Device {
         title: session.full_title || session.title || '',
         media_type: session.media_type || '',
         progress_percent: Number(session.progress_percent) || 0,
+        ...this._indexTokens(session),
       })
       .catch((err) => this.error('stream_ended trigger error:', err.message));
   }
@@ -168,6 +181,7 @@ class TautulliDevice extends Homey.Device {
         title: session.full_title || session.title || '',
         media_type: session.media_type || '',
         player: session.player || '',
+        ...this._indexTokens(session),
       })
       .catch((err) => this.error('stream_paused trigger error:', err.message));
   }
@@ -179,6 +193,7 @@ class TautulliDevice extends Homey.Device {
         title: session.full_title || session.title || '',
         media_type: session.media_type || '',
         player: session.player || '',
+        ...this._indexTokens(session),
       })
       .catch((err) => this.error('stream_resumed trigger error:', err.message));
   }
@@ -222,6 +237,7 @@ class TautulliDevice extends Homey.Device {
         media_type: record.media_type || '',
         percent_complete: Number(record.percent_complete) || 0,
         duration: Number(record.duration) || 0,
+        ...this._indexTokens(record),
       })
       .catch((err) => this.error('watch_completed trigger error:', err.message));
   }
@@ -339,6 +355,10 @@ class TautulliDevice extends Homey.Device {
   }
 
   async getTopStats({ timeRange = 30, count = 5 } = {}) {
+    const cacheKey = `${timeRange}:${count}`;
+    const cached = this._statsCache.get(cacheKey);
+    if (cached && Date.now() < cached.expiresAt) return cached.data;
+
     const stats = await this._client.getHomeStats({ timeRange, count });
     const statList = Array.isArray(stats) ? stats : [];
 
@@ -390,6 +410,7 @@ class TautulliDevice extends Homey.Device {
       }));
     });
 
+    this._statsCache.set(cacheKey, { data: result, expiresAt: Date.now() + 60000 });
     return result;
   }
 

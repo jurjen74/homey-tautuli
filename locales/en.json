@@ -19,7 +19,7 @@
   },
   "widgets": {
     "tautulli_recent": {
-      "title": "Recently Watched",
+      "title": "Recently Played",
       "no_items": "No watch history found"
     },
     "tautulli_nowplaying": {
